@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import EllipsisIcon from "../assets/ellipsis-horizontal.svg";
+import StockLineChart from "./StockLineChart";
+import { formatPrice, formatChange } from "./utils";
 
 const WatchlistTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -92,165 +94,128 @@ const WatchlistTable = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentTokens = tokens.slice(startIndex, endIndex);
 
-  const Sparkline = ({ data, isPositive }) => {
-    const max = Math.max(...data);
-    const min = Math.min(...data);
-    const range = max - min;
-
-    const points = data
-      .map((value, index) => {
-        const x = (index / (data.length - 1)) * 100;
-        const y = 100 - ((value - min) / range) * 100;
-        return `${x},${y}`;
-      })
-      .join(" ");
-
-    return (
-      <div className="w-20 h-10">
-        <svg
-          width="100%"
-          height="100%"
-          viewBox="0 0 100 100"
-          className="overflow-visible"
-        >
-          <polyline
-            fill="none"
-            stroke={isPositive ? "#10b981" : "#ef4444"}
-            strokeWidth="2"
-            points={points}
-          />
-        </svg>
-      </div>
-    );
-  };
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(price);
-  };
-
-  const formatChange = (change) => {
-    const sign = change > 0 ? "+" : "";
-    return `${sign}${change.toFixed(2)}%`;
-  };
+  const tableHeaderCellClass =
+    "text-left text-[#A1A1AA] font-medium text-sm p-4";
 
   return (
-    <div>
+    <div className="rounded-xl border border-[#FFFFFF14]">
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-700">
-              <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">
-                Token
-              </th>
-              <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">
-                Price
-              </th>
-              <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">
-                24h %
-              </th>
-              <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">
-                Sparkline (7d)
-              </th>
-              <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">
-                Holdings
-              </th>
-              <th className="text-left py-3 px-4 text-gray-400 font-medium text-sm">
-                Value
-              </th>
-              <th className="w-10 py-3 px-4"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentTokens.map((token) => (
-              <tr
-                key={token.id}
-                className="border-b border-gray-800 hover:bg-gray-800/30 transition-colors"
-              >
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm">
-                      {token.icon}
-                    </div>
-                    <div>
-                      <div className="text-white font-medium">{token.name}</div>
-                      <div className="text-gray-400 text-sm">
-                        ({token.symbol})
-                      </div>
-                    </div>
+      <table className="w-full">
+        {/* Table header */}
+        <thead className="bg-[#27272A]">
+          <tr className="border-b border-[#FFFFFF14]">
+            <th className={`rounded-tl-xl ${tableHeaderCellClass}`}>Token</th>
+            <th className={tableHeaderCellClass}>Price</th>
+            <th className={tableHeaderCellClass}>24h %</th>
+            <th className={tableHeaderCellClass}>Sparkline (7d)</th>
+            <th className={tableHeaderCellClass}>Holdings</th>
+            <th className={tableHeaderCellClass}>Value</th>
+            <th className={`rounded-tr-xl ${tableHeaderCellClass}`}></th>
+          </tr>
+        </thead>
+
+        {/* Table body */}
+        <tbody className="[&>tr>td]:px-6">
+          {currentTokens.map((token) => (
+            <tr key={token.id} className="bg-[#212124] hover:bg-[#27272A]">
+              {/* Token */}
+              <td>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-sm">
+                    {token.icon}
                   </div>
-                </td>
-                <td className="py-4 px-4 text-white font-medium">
-                  {formatPrice(token.price)}
-                </td>
-                <td className="py-4 px-4">
-                  <span
-                    className={`font-medium ${
-                      token.change24h > 0 ? "text-green-400" : "text-red-400"
-                    }`}
-                  >
-                    {formatChange(token.change24h)}
+                  <span className="text-xs text-[#F4F4F5] font-normal">
+                    {token.name}{" "}
+                    <span className="text-[#A1A1AA] text-sm">
+                      ({token.symbol})
+                    </span>
                   </span>
-                </td>
-                <td className="py-4 px-4">
-                  <Sparkline
-                    data={token.sparklineData}
-                    isPositive={token.change24h > 0}
-                  />
-                </td>
-                <td className="py-4 px-4 text-white">
+                </div>
+              </td>
+
+              {/* Price */}
+              <td>
+                <span className="text-xs text-[#A1A1AA] font-normal">
+                  {formatPrice(token.price)}
+                </span>
+              </td>
+
+              {/* 24h % */}
+              <td>
+                <span className="text-xs text-[#A1A1AA] font-normal">
+                  {formatChange(token.change24h)}
+                </span>
+              </td>
+
+              {/* Sparkline (7d) */}
+              <td>
+                <div className="flex items-end justify-start">
+                  <StockLineChart />
+                </div>
+              </td>
+
+              {/* Holdings */}
+              <td>
+                <span className="text-xs text-[#F4F4F5] font-normal">
                   {token.holdings.toFixed(4)}
-                </td>
-                <td className="py-4 px-4 text-white font-medium">
+                </span>
+              </td>
+
+              {/* Value */}
+              <td>
+                <span className="text-xs text-[#F4F4F5] font-normal">
                   {formatPrice(token.value)}
-                </td>
-                <td className="py-4">
-                  <button className="text-gray-400 hover:text-white transition-colors cursor-pointer">
-                    <img src={EllipsisIcon} alt="more options" className="w-5 h-5" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </span>
+              </td>
+
+              {/* More options */}
+              <td>
+                <button className="text-[#A1A1AA] hover:text-white transition-colors cursor-pointer">
+                  <img
+                    src={EllipsisIcon}
+                    alt="more options"
+                    className="w-4 h-4"
+                  />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-700">
-        <div className="text-gray-400 text-sm">
+      <div className="flex items-center justify-between p-4 border-t border-[#FFFFFF14] ">
+        {/* Results */}
+        <span className="text-[#A1A1AA] text-sm font-medium">
           {startIndex + 1} — {Math.min(endIndex, tokens.length)} of{" "}
           {tokens.length} results
-        </div>
+        </span>
 
-        <div className="flex items-center gap-4">
-          <div className="text-gray-400 text-sm">
+        <div className="flex items-center gap-6">
+          {/* Pages */}
+          <span className="text-[#A1A1AA] text-sm font-medium">
             {currentPage} of {totalPages} pages
-          </div>
+          </span>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-              disabled={currentPage === 1}
-              className="px-3 py-1 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Prev
-            </button>
+          {/* Prev */}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            className="text-sm text-[#A1A1AA] disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+          >
+            Prev
+          </button>
 
-            <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-              }
-              disabled={currentPage === totalPages}
-              className="px-3 py-1 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
-          </div>
+          {/* Next */}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+            }
+            disabled={currentPage === totalPages}
+            className="text-sm text-[#A1A1AA] disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>

@@ -16,9 +16,9 @@ const WatchlistComponent = () => {
   };
 
   return (
-    <div className="bg-[#2a2a2e] rounded-lg p-6">
+    <div className="flex flex-col gap-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <img src={StarIcon} alt="watchlist" />
           <h2 className="text-[#F4F4F5] text-2xl font-medium">Watchlist</h2>
@@ -30,7 +30,9 @@ const WatchlistComponent = () => {
             className="flex items-center gap-2 px-3 py-2 rounded-md bg-[#27272A] cursor-pointer"
           >
             <img src={RefreshIcon} alt="refresh" />
-            <span className="text-[#F4F4F5] text-sm font-medium">Refresh Prices</span>
+            <span className="text-[#F4F4F5] text-sm font-medium">
+              Refresh Prices
+            </span>
           </button>
 
           <button
@@ -38,7 +40,9 @@ const WatchlistComponent = () => {
             className="flex items-center gap-2 px-3 py-2 rounded-md bg-[#A9E851] cursor-pointer"
           >
             <img src={AddIcon} alt="add" />
-            <span className="text-[#18181B] text-sm font-medium">Add Token</span>
+            <span className="text-[#18181B] text-sm font-medium">
+              Add Token
+            </span>
           </button>
         </div>
       </div>
