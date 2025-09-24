@@ -54,6 +54,8 @@ const data = [
   { value: 165 },
 ];
 
+// created custom stock like chart for sparkline
+// not using this anymore, using the sparkline from the api
 export default function StockLikeChart() {
   return (
     <LineChart data={data} width={100} height={50}>

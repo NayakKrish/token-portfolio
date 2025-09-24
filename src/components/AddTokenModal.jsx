@@ -157,7 +157,7 @@ const AddTokenModal = () => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0"
       role="dialog"
       aria-modal="true"
     >
@@ -221,58 +221,59 @@ const AddTokenModal = () => {
           )}
 
           {/* List */}
-          {tokens.map((token) => (
-            <button
-              key={token.id}
-              onClick={() =>
-                setSelectedIds((prev) =>
-                  prev.includes(token.id)
-                    ? prev.filter((id) => id !== token.id)
-                    : [...prev, token.id]
-                )
-              }
-              className={`w-full p-2 flex items-center justify-between rounded-md cursor-pointer ${
-                selectedIds.includes(token.id)
-                  ? "bg-[#A9E8510F]"
-                  : "hover:bg-[#27272A]"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-7 h-7 rounded-md overflow-hidden flex items-center justify-center">
-                  {token.image ? (
-                    <img
-                      src={token.image}
-                      alt={token.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-sm text-[#A1A1AA]">
-                      {token.symbol}
-                    </span>
-                  )}
-                </div>
-                <div className="text-left flex items-center gap-2">
-                  <span className="text-sm text-[#F4F4F5] font-normal">
-                    {token.name} ({token.symbol})
-                  </span>
-                </div>
-              </div>
-
-              {/* Circle check (multi-select) */}
-              {selectedIds.includes(token.id) ? (
+          {tokens.length > 0 &&
+            tokens.map((token) => (
+              <button
+                key={token.id}
+                onClick={() =>
+                  setSelectedIds((prev) =>
+                    prev.includes(token.id)
+                      ? prev.filter((id) => id !== token.id)
+                      : [...prev, token.id]
+                  )
+                }
+                className={`w-full p-2 flex items-center justify-between rounded-md cursor-pointer ${
+                  selectedIds.includes(token.id)
+                    ? "bg-[#A9E8510F]"
+                    : "hover:bg-[#27272A]"
+                }`}
+              >
                 <div className="flex items-center gap-3">
-                  <img src={StarIcon} alt="star" className="w-3 h-3" />
-                  <img src={CheckCircleIcon} alt="check" />
+                  <div className="w-7 h-7 rounded-md overflow-hidden flex items-center justify-center">
+                    {token.image ? (
+                      <img
+                        src={token.image}
+                        alt={token.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-sm text-[#A1A1AA]">
+                        {token.symbol}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-left flex items-center gap-2">
+                    <span className="text-sm text-[#F4F4F5] font-normal">
+                      {token.name} ({token.symbol})
+                    </span>
+                  </div>
                 </div>
-              ) : (
-                <div
-                  className={`w-3 h-3 rounded-full border ${
-                    selectedIds.includes(token.id) ? "" : "border-[#3F3F46]"
-                  } flex items-center justify-center`}
-                />
-              )}
-            </button>
-          ))}
+
+                {/* Circle check (multi-select) */}
+                {selectedIds.includes(token.id) ? (
+                  <div className="flex items-center gap-3">
+                    <img src={StarIcon} alt="star" className="w-3 h-3" />
+                    <img src={CheckCircleIcon} alt="check" />
+                  </div>
+                ) : (
+                  <div
+                    className={`w-3 h-3 rounded-full border ${
+                      selectedIds.includes(token.id) ? "" : "border-[#3F3F46]"
+                    } flex items-center justify-center`}
+                  />
+                )}
+              </button>
+            ))}
 
           {!isLoading && !isError && tokens.length === 0 && (
             <div className="px-4 py-8 text-center text-sm text-[#A1A1AA]">

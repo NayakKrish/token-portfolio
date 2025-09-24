@@ -76,13 +76,13 @@ const PortfolioTotalCard = () => {
   // Empty state
   if (holdings.length === 0) {
     return (
-      <div className="flex justify-between items-center gap-5 p-6 rounded-xl bg-[#27272A]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-10 sm:gap-5 p-6 rounded-xl bg-[#27272A]">
         <div className="flex flex-col gap-3 flex-1">
           <h4 className="text-sm font-medium text-[#A1A1AA]">
             Portfolio Total
           </h4>
           <h1 className="text-4xl font-semibold text-[#F4F4F5]">$0.00</h1>
-          <p className="text-sm font-medium text-[#A1A1AA] mt-24">
+          <p className="text-sm font-medium text-[#A1A1AA] mt-24 sm:mt-0">
             No holdings added yet
           </p>
         </div>
@@ -101,26 +101,26 @@ const PortfolioTotalCard = () => {
   }
 
   return (
-    <div className="flex justify-between items-center gap-5 p-6 rounded-xl bg-[#27272A]">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-10 sm:gap-5 p-6 sm:rounded-xl bg-[#27272A]">
       {/* portfolio total amount and date section */}
       <div className="flex flex-col gap-3 flex-1">
         <h4 className="text-sm font-medium text-[#A1A1AA]">Portfolio Total</h4>
         <h1 className="text-4xl font-semibold text-[#F4F4F5]">
           {portfolioTotal}
         </h1>
-        <p className="text-sm font-medium text-[#A1A1AA] mt-24">
+        <p className="text-sm font-medium text-[#A1A1AA] mt-0 sm:mt-24">
           Last updated: {new Date().toLocaleTimeString()}
         </p>
       </div>
 
       {/* portfolio chart and details section */}
-      <div className="flex flex-col gap-3 flex-1">
+      <div className="flex flex-col gap-3 flex-1 w-full">
         <h4 className="text-sm font-medium text-[#A1A1AA]">
           Portfolio Distribution
         </h4>
 
         {/* chart */}
-        <div className="flex items-start justify-start gap-5">
+        <div className="flex flex-col sm:flex-row w-full items-center sm:items-start justify-center sm:justify-start gap-5">
           <DonutChart data={portfolioData.chartData} />
 
           {/* details */}

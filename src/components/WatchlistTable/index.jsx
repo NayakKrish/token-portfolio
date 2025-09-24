@@ -137,26 +137,28 @@ const WatchlistTable = () => {
 
   return (
     <div className="rounded-xl border border-[#FFFFFF14]">
-      {/* Table */}
-      <table className="w-full">
-        <TableHeader />
-        <tbody className="[&>tr>td]:px-4 [&>tr>td]:py-2 [&>tr>td]:text-left">
-          {currentTokens.map((token) => (
-            <WatchlistTableRow
-              key={token.id}
-              token={token}
-              editingId={editingId}
-              editAmount={editAmount}
-              openPopoverId={openPopoverId}
-              onEditAmountChange={setEditAmount}
-              onSaveHoldings={handleSaveHoldings}
-              onEditHoldings={handleEditHoldings}
-              onTogglePopover={handleTogglePopover}
-              onRemoveToken={removeToken}
-            />
-          ))}
-        </tbody>
-      </table>
+      {/* Table with horizontal scroll for mobile */}
+      <div className="overflow-x-auto sm:overflow-x-visible">
+        <table className="w-full min-w-[800px] sm:min-w-0">
+          <TableHeader />
+          <tbody className="[&>tr>td]:px-4 [&>tr>td]:py-2 [&>tr>td]:text-left">
+            {currentTokens.map((token) => (
+              <WatchlistTableRow
+                key={token.id}
+                token={token}
+                editingId={editingId}
+                editAmount={editAmount}
+                openPopoverId={openPopoverId}
+                onEditAmountChange={setEditAmount}
+                onSaveHoldings={handleSaveHoldings}
+                onEditHoldings={handleEditHoldings}
+                onTogglePopover={handleTogglePopover}
+                onRemoveToken={removeToken}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <Pagination
         currentPage={currentPage}

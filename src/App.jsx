@@ -9,7 +9,7 @@ function App() {
       <Navbar />
 
       {/* Portfolio Total amount and chart */}
-      <div className="px-6 flex flex-col gap-12 my-4">
+      <div className="sm:px-6 flex flex-col gap-12 my-4">
         {/* Portfolio Total amount and chart */}
         <PortfolioTotalCard />
 

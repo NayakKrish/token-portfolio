@@ -61,7 +61,7 @@ const WatchlistComponent = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mx-4 sm:mx-0">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ const WatchlistComponent = () => {
               alt="refresh"
               className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
             />
-            <span className="text-[#F4F4F5] text-sm font-medium">
+            <span className="text-[#F4F4F5] text-sm font-medium hidden sm:block">
               {isRefreshing ? "Refreshing..." : "Refresh Prices"}
             </span>
           </button>

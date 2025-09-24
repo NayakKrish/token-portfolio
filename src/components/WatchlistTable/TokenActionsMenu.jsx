@@ -21,7 +21,7 @@ const TokenActionsMenu = ({
 
       {/* Popover Menu */}
       {isOpen && (
-        <div className="absolute right-15 top-0 mt-5 w-40 bg-[#27272A] rounded-lg shadow-lg z-10 py-1">
+        <div className="absolute right-5 sm:right-15 top-0 mt-5 w-40 bg-[#27272A] rounded-lg shadow-lg z-10 py-1">
           {/* Edit Holdings */}
           <button
             onClick={() => onEditHoldings(token)}
