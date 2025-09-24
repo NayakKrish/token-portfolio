@@ -1,29 +1,8 @@
 import { Cell, Pie, PieChart } from "recharts";
 
-const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-  { name: "Group E", value: 500 },
-  { name: "Group F", value: 200 },
-];
+const defaultData = [{ name: "No Holdings", value: 100, color: "#3F3F46" }];
 
-const COLORS = [
-  "#A78BFA",
-  "#FB7185",
-  "#10B981",
-  "#60A5FA",
-  "#18C9DD",
-  "#FB923C",
-  "#F59E0B",
-  "#EC4899",
-  "#8B5CF6",
-  "#3B82F6",
-  "#2563EB",
-];
-
-export default function DonutChart() {
+export default function DonutChart({ data = defaultData }) {
   return (
     <PieChart width={200} height={200}>
       <Pie
@@ -37,8 +16,8 @@ export default function DonutChart() {
       >
         {data.map((entry, index) => (
           <Cell
-            key={`cell-${entry.name}`}
-            fill={COLORS[index % COLORS.length]}
+            key={`cell-${entry.name}-${index}`}
+            fill={entry.color || "#3F3F46"}
           />
         ))}
       </Pie>
