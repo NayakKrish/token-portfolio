@@ -47,11 +47,15 @@ const WatchlistTableRow = ({
 
       {/* Sparkline (7d) */}
       <td>
-        <img
-          src={token?.data?.sparkline}
-          alt={token.name}
-          className="w-20 h-5"
-        />
+        {token?.data?.sparkline ? (
+          <img
+            src={token?.data?.sparkline}
+            alt={token.name}
+            className="w-20 h-5"
+          />
+        ) : (
+          <div className="w-20 h-5 text-center text-[#A1A1AA] text-xs">--</div>
+        )}
       </td>
 
       {/* Holdings */}

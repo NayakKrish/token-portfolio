@@ -127,7 +127,6 @@ export const {
   addHolding,
   removeHolding,
   updateHolding,
-  updateHoldings,
   openAddTokenModal,
   closeAddTokenModal,
 } = portfolioSlice.actions;

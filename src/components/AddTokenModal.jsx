@@ -6,7 +6,10 @@ import React, {
   useState,
 } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useGetTrendingCoinsQuery } from "../store/api/coinGeckoApi";
+import {
+  useGetTrendingCoinsQuery,
+  useSearchCoinsQuery,
+} from "../store/api/coinGeckoApi";
 import {
   selectAddTokenModalOpen,
   selectWatchlist,
@@ -18,42 +21,83 @@ import StarIcon from "../assets/star-icon.svg";
 
 const AddTokenModal = () => {
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const isOpen = useSelector(selectAddTokenModalOpen);
   const watchlist = useSelector(selectWatchlist);
 
-  // Load trending coins when modal is open
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Load trending coins when modal is open and no search
   const {
     data: trendingData,
-    isLoading,
-    isError,
-    refetch,
-  } = useGetTrendingCoinsQuery(undefined, { skip: !isOpen });
+    isLoading: isTrendingLoading,
+    isError: isTrendingError,
+    refetch: refetchTrending,
+  } = useGetTrendingCoinsQuery(undefined, {
+    skip: !isOpen || debouncedSearch.trim().length > 0,
+  });
+
+  // Search coins when there's a search query
+  const {
+    data: searchData,
+    isLoading: isSearchLoading,
+    isError: isSearchError,
+    refetch: refetchSearch,
+  } = useSearchCoinsQuery(
+    { query: debouncedSearch },
+    {
+      skip: !isOpen || debouncedSearch.trim().length === 0,
+    }
+  );
 
   const tokens = useMemo(() => {
-    if (!trendingData?.coins?.length) return [];
-    return trendingData.coins.map((entry) => {
-      const item = entry.item || entry; // safety
-      return {
-        id: item.id,
-        coin_id: item.coin_id,
-        image: item.small || item.thumb || item.large,
-        name: item.name,
-        symbol: item.symbol,
-        slug: item.slug,
-        data: item.data,
-        market_cap_rank: item.market_cap_rank,
-      };
-    });
-  }, [trendingData]);
+    if (debouncedSearch.trim().length > 0) {
+      // Handle search results format
+      if (!searchData?.coins?.length) return [];
+      return searchData.coins.map((coin) => ({
+        id: coin.id,
+        coin_id: coin.id,
+        image: coin.thumb || coin.small || coin.large,
+        name: coin.name,
+        symbol: coin.symbol,
+        slug: coin.slug,
+        data: coin.data,
+        market_cap_rank: coin.market_cap_rank,
+      }));
+    } else {
+      // Handle trending results format
+      if (!trendingData?.coins?.length) return [];
+      return trendingData.coins.map((entry) => {
+        const item = entry.item || entry; // safety
+        return {
+          id: item.id,
+          coin_id: item.coin_id,
+          image: item.small || item.thumb || item.large,
+          name: item.name,
+          symbol: item.symbol,
+          slug: item.slug,
+          data: item.data,
+          market_cap_rank: item.market_cap_rank,
+        };
+      });
+    }
+  }, [trendingData, searchData, debouncedSearch]);
 
   const onClose = useCallback(() => {
     dispatch(closeAddTokenModal());
     setSelectedIds([]);
     setSearch("");
-  }, [dispatch, setSelectedIds, setSearch]);
+    setDebouncedSearch("");
+  }, [dispatch]);
 
   const onConfirm = useCallback(
     (pickedTokens) => {
@@ -101,16 +145,13 @@ const AddTokenModal = () => {
     });
   }, [isOpen, watchlist, tokens]);
 
-  const filtered = useMemo(() => {
-    if (!search) return tokens;
-    const q = search.toLowerCase().trim();
-    return tokens.filter(
-      (t) =>
-        t.name.toLowerCase().includes(q) ||
-        t.symbol.toLowerCase().includes(q) ||
-        t.id.toLowerCase().includes(q)
-    );
-  }, [tokens, search]);
+  // Determine loading and error states
+  const isLoading =
+    debouncedSearch.trim().length > 0 ? isSearchLoading : isTrendingLoading;
+  const isError =
+    debouncedSearch.trim().length > 0 ? isSearchError : isTrendingError;
+  const refetch =
+    debouncedSearch.trim().length > 0 ? refetchSearch : refetchTrending;
 
   if (!isOpen) return null;
 
@@ -154,7 +195,9 @@ const AddTokenModal = () => {
 
         {/* Body: list */}
         <div className="max-h-90 min-h-90 overflow-y-auto p-2 space-y-1">
-          <div className="p-2 text-xs text-[#71717A]">Trending</div>
+          <div className="p-2 text-xs text-[#71717A]">
+            {debouncedSearch.trim().length > 0 ? "Search Results" : "Trending"}
+          </div>
 
           {/* Loading */}
           {isLoading && (
@@ -178,7 +221,7 @@ const AddTokenModal = () => {
           )}
 
           {/* List */}
-          {filtered.map((token) => (
+          {tokens.map((token) => (
             <button
               key={token.id}
               onClick={() =>
@@ -231,9 +274,11 @@ const AddTokenModal = () => {
             </button>
           ))}
 
-          {!isLoading && !isError && filtered.length === 0 && (
+          {!isLoading && !isError && tokens.length === 0 && (
             <div className="px-4 py-8 text-center text-sm text-[#A1A1AA]">
-              No results
+              {debouncedSearch.trim().length > 0
+                ? "No results found"
+                : "No trending coins available"}
             </div>
           )}
         </div>
