@@ -1,6 +1,6 @@
 import React from "react";
 import AppLogo from "../assets/app-logo.svg";
-import WalletIcon from "../assets/wallet-icon.svg";
+import WalletConnectButton from "./WalletConnectButton";
 
 const Navbar = () => {
   return (
@@ -16,10 +16,7 @@ const Navbar = () => {
       {/* right side */}
       <div className="flex items-center gap-2">
         {/* Action Buttons */}
-        <button className="px-3 py-2 rounded-full bg-[#A9E851] flex items-center gap-2 cursor-pointer">
-          <img src={WalletIcon} alt="Wallet Icon" className="w-4 h-4" />
-          <span className="text-[#18181B] font-medium text-sm">Connect Wallet</span>
-        </button>
+        <WalletConnectButton />
       </div>
     </header>
   );
